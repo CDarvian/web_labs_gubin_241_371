@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center my-4">
+    <div class="col-lg-10">
+        <h1 class="mb-2">{{ post.title }}</h1>
+        <p class="text-muted mb-4">{{ post.author }}, {{ post.date.strftime('%d.%m.%Y') }}</p>
+
+        <img class="img-fluid w-100 mb-4 border" src="{{ url_for('static', filename='images/' + post.image_id) }}" alt="Изображение поста">
+
+        <div class="mb-5" style="text-align: justify;">
+            {{ post.text }}
+        </div>
+
+        <div class="card mb-5 bg-light">
+            <div class="card-header bg-transparent border-bottom-0 pb-0">
+                <h5 class="mb-0">Оставьте комментарий</h5>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <textarea class="form-control" rows="3" placeholder="Ваш комментарий..."></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="comments-section">
+            {% for comment in post.comments %}
+            <div class="d-flex mb-4">
+                <div class="flex-shrink-0">
+                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; font-weight: bold;">
+                        {{ comment.author[0] | upper }}
+                    </div>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h6 class="mt-0 fw-bold">{{ comment.author }}</h6>
+                    <p>{{ comment.text }}</p>
+
+                    {% if comment.replies %}
+                        {% for reply in comment.replies %}
+                        <div class="d-flex mt-3">
+                            <div class="flex-shrink-0">
+                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; font-size: 0.8rem; font-weight: bold;">
+                                    {{ reply.author[0] | upper }}
+                                </div>
+                            </div>
+                            <div class="ms-3 flex-grow-1">
+                                <h6 class="mt-0 fw-bold">{{ reply.author }}</h6>
+                                <p>{{ reply.text }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
