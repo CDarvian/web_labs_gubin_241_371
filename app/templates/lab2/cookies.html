@@ -1,0 +1,15 @@
+{% extends 'lab2/base.html' %}
+{% block content %}
+<h2>Cookie</h2>
+<div class="alert alert-info mt-3">
+    Если куки <strong>lab2_cookie</strong> не было, оно сейчас установилось. Обнови страницу, и оно удалится!
+</div>
+<h4>Текущие Cookie:</h4>
+<ul class="list-group">
+    {% for key, value in cookies.items() %}
+        <li class="list-group-item"><strong>{{ key }}:</strong> {{ value }}</li>
+    {% else %}
+        <li class="list-group-item">Нет активных Cookie</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -3,6 +3,9 @@ from functools import lru_cache
 from flask import Flask, render_template, Blueprint, abort
 from faker import Faker
 
+# Подключаем вторую лабораторную работу
+from lab2 import lab2_bp
+
 fake = Faker()
 
 app = Flask(__name__)
@@ -73,6 +76,7 @@ def about():
 
 # Регистрируем Blueprint в приложении
 app.register_blueprint(lab1_bp)
+app.register_blueprint(lab2_bp)
 
 
 # --- Главная страница всего репозитория ---
@@ -84,6 +88,7 @@ def main_index():
         <h1>Мои лабораторные работы</h1>
         <ul>
             <li><a href="/lab1/">Лабораторная работа №1</a></li>
+            <li><a href="/lab2/">Лабораторная работа №2</a></li>
         </ul>
     </div>
     """

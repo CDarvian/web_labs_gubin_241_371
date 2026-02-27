@@ -1,0 +1,20 @@
+{% extends 'lab2/base.html' %}
+{% block content %}
+<h2>Форма с обработкой ошибок</h2>
+<form method="POST" class="mt-4" novalidate>
+    <div class="mb-3">
+        <label for="phone" class="form-label">Номер телефона</label>
+        <input type="text" class="form-control {% if error %}is-invalid{% endif %}" id="phone" name="phone" value="{{ raw_phone }}" placeholder="+7 (123) 456-75-90">
+        {% if error %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-success">Проверить</button>
+</form>
+
+{% if formatted_phone %}
+    <div class="alert alert-success mt-4">
+        <strong>Номер успешно отформатирован:</strong> {{ formatted_phone }}
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'lab2/base.html' %}
+{% block content %}
+<h1 class="mb-4">Лабораторная работа №2</h1>
+<div class="list-group">
+    <a href="{{ url_for('lab2.url_params') }}?name=Ivan&group=123" class="list-group-item list-group-item-action">Параметры URL (с тестовыми данными)</a>
+    <a href="{{ url_for('lab2.headers') }}" class="list-group-item list-group-item-action">Заголовки запроса</a>
+    <a href="{{ url_for('lab2.cookies') }}" class="list-group-item list-group-item-action">Cookie</a>
+    <a href="{{ url_for('lab2.form_params') }}" class="list-group-item list-group-item-action">Параметры формы</a>
+    <a href="{{ url_for('lab2.phone') }}" class="list-group-item list-group-item-action">Проверка телефона</a>
+</div>
+{% endblock %}
