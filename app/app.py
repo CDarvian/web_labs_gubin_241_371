@@ -1,94 +1,47 @@
-import random
-from functools import lru_cache
-from flask import Flask, render_template, Blueprint, abort
-from faker import Faker
-
-# Подключаем вторую лабораторную работу
-from lab2 import lab2_bp
-
-fake = Faker()
+from flask import Flask
+from flask_login import LoginManager
 
 app = Flask(__name__)
 application = app
+app.config['SECRET_KEY'] = 'super_secret_key_for_flask_app'
 
-# Создаем Blueprint для первой лабораторной
-lab1_bp = Blueprint('lab1', __name__, url_prefix='/lab1')
+# --- Инициализация Flask-Login ---
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'lab3.login'
+login_manager.login_message = 'Для доступа к запрашиваемой странице необходимо пройти процедуру аутентификации.'
+login_manager.login_message_category = 'warning'
 
-images_ids = ['7d4e9175-95ea-4c5f-8be5-92a6b708bb3c',
-              '2d2ab7df-cdbc-48a8-a936-35bba702def5',
-              '6e12f3de-d5fd-4ebb-855b-8cbc485278b7',
-              'afc2cfe7-5cac-4b80-9b9a-d5c65ef0c728',
-              'cab5b7f2-774e-4884-a200-0c0180fa777f']
-
-
-def generate_comments(replies=True):
-    comments = []
-    for _ in range(random.randint(1, 3)):
-        comment = {'author': fake.name(), 'text': fake.text()}
-        if replies:
-            comment['replies'] = generate_comments(replies=False)
-        comments.append(comment)
-    return comments
-
-
-def generate_post(i):
-    return {
-        'title': 'Заголовок поста',
-        'text': fake.paragraph(nb_sentences=100),
-        'author': fake.name(),
-        'date': fake.date_time_between(start_date='-2y', end_date='now'),
-        'image_id': f'{images_ids[i]}.jpg',
-        'comments': generate_comments()
-    }
-
-
-@lru_cache
-def posts_list():
-    return sorted([generate_post(i) for i in range(5)], key=lambda p: p['date'], reverse=True)
-
-
-# --- Маршруты лабораторной №1 ---
-@lab1_bp.route('/')
-def index():
-    return render_template('index.html')
-
-
-@lab1_bp.route('/posts')
-def posts():
-    return render_template('posts.html', title='Посты', posts=posts_list())
-
-
-@lab1_bp.route('/posts/<int:index>')
-def post(index):
-    posts = posts_list()
-    # Обработка ошибки 404
-    if index < 0 or index >= len(posts):
-        abort(404)
-
-    p = posts[index]
-    return render_template('post.html', title=p['title'], post=p)
-
-
-@lab1_bp.route('/about')
-def about():
-    return render_template('about.html', title='Об авторе')
-
-
-# Регистрируем Blueprint в приложении
+# --- Подключение всех лабораторных (Blueprints) ---
+from lab1 import lab1_bp
 app.register_blueprint(lab1_bp)
+
+from lab2 import lab2_bp
 app.register_blueprint(lab2_bp)
 
+from lab3 import lab3_bp, users_db
+app.register_blueprint(lab3_bp)
+
+@login_manager.user_loader
+def load_user(user_id):
+    for user in users_db.values():
+        if user.id == user_id:
+            return user
+    return None
 
 # --- Главная страница всего репозитория ---
 @app.route('/')
 def main_index():
-    # Эта страница будет оглавлением для всех будущих лаб на хостинге
     return """
     <div style="font-family: sans-serif; padding: 2rem;">
         <h1>Мои лабораторные работы</h1>
         <ul>
             <li><a href="/lab1/">Лабораторная работа №1</a></li>
             <li><a href="/lab2/">Лабораторная работа №2</a></li>
+            <li><a href="/lab3/">Лабораторная работа №3</a></li>
         </ul>
     </div>
     """
+
+if __name__ == '__main__':
+    app.run(debug=True)

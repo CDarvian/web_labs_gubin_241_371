@@ -1,0 +1,21 @@
+{% extends 'lab3/base.html' %}
+{% block content %}
+<h1 class="mb-4">Авторизация</h1>
+<div class="row"><div class="col-md-5">
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Логин (user)</label>
+            <input type="text" name="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Пароль (qwerty)</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="remember" class="form-check-input" id="rememberCheck">
+            <label class="form-check-label" for="rememberCheck">Запомнить меня</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+</div></div>
+{% endblock %}
