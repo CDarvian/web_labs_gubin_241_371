@@ -1,0 +1,19 @@
+<form method="POST" action="{{ url_for('courses.create_review', course_id=course.id) }}" class="review-form">
+    {% if sort is defined %}
+        <input type="hidden" name="sort" value="{{ sort }}">
+    {% endif %}
+    <h4 class="mb-3">Оставить отзыв</h4>
+    <div class="mb-3">
+        <label for="rating" class="form-label">Оценка</label>
+        <select class="form-select" name="rating" id="rating">
+            {% for value, label in rating_choices %}
+                <option value="{{ value }}" {% if value == 5 %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="text" class="form-label">Текст отзыва</label>
+        <textarea class="form-control" name="text" id="text" rows="4" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-dark">Отправить отзыв</button>
+</form>

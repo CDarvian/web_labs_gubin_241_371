@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{{ url_for('lab6.static', filename='styles.css') }}">
+
+    <title>Образовательный портал | Московский Политех</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand logo" href="{{ url_for('courses.index') }}">
+                    <img class="img-fluid" src="{{ url_for('lab6.static', filename='images/polytech_logo.png') }}" alt="polytech-logo">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#lab6Navbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="lab6Navbar">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('courses.index') }}">Каталог курсов</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('courses.new') }}">Создать курс</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('lab4.change_password') }}">Изменить пароль</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('lab4.logout') }}">Выйти ({{ current_user.login }})</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('lab4.login', next=request.url) }}">Войти</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item ms-lg-3">
+                            <a class="nav-link text-warning" href="/">&larr; Все лабы</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="alerts-area">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show m-0 rounded-0" role="alert">
+                    {{ msg }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+
+    <main class="main flex-grow-1">
+       {% block content %}
+       {% endblock %}
+    </main>
+
+    <footer class="bg-dark text-white d-flex align-items-center justify-content-center py-3">
+        &copy; Московский политехнический университет
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+
+    <script defer src="{{ url_for('lab6.static', filename='main.js') }}"></script>
+</body>
+
+</html>

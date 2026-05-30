@@ -1,0 +1,11 @@
+{% extends 'lab4/base.html' %}
+{% from 'lab4/_user_form.html' import user_form %}
+{% block content %}
+<h1 class="mb-4">Создание пользователя</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        {{ user_form(url_for('lab4.create_user'), roles, form_data, field_errors, is_edit=false) }}
+    </div>
+</div>
+{% endblock %}

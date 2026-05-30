@@ -1,0 +1,57 @@
+{% extends 'portal.html' %}
+{% from 'pagination.html' import render_pagination %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="mb-4">
+        <a href="{{ url_for('courses.show', course_id=course.id) }}">&larr; К курсу «{{ course.name }}»</a>
+    </div>
+
+    <h2 class="mb-4 text-uppercase font-weight-bold">Отзывы о курсе «{{ course.name }}»</h2>
+
+    <form method="GET" class="row align-items-end mb-4 g-3">
+        <div class="col-md-4">
+            <label for="sort" class="form-label">Порядок сортировки</label>
+            <select class="form-select" name="sort" id="sort">
+                <option value="newest" {% if sort == 'newest' %}selected{% endif %}>По новизне</option>
+                <option value="positive" {% if sort == 'positive' %}selected{% endif %}>Сначала положительные</option>
+                <option value="negative" {% if sort == 'negative' %}selected{% endif %}>Сначала отрицательные</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-dark w-100">Применить</button>
+        </div>
+    </form>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            {% include 'courses/_review_item.html' %}
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">Пока нет отзывов.</p>
+    {% endif %}
+
+    <div class="my-4">
+        {{ render_pagination(pagination, 'courses.reviews', sort_params) }}
+    </div>
+
+    <section class="review-form-section mt-5">
+        {% if user_review %}
+        <div class="card mb-3 border-primary">
+            <div class="card-header">Ваш отзыв</div>
+            <div class="card-body">
+                {% with review=user_review %}
+                    {% include 'courses/_review_item.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        {% elif current_user.is_authenticated %}
+            {% include 'courses/_review_form.html' %}
+        {% else %}
+            <p class="text-muted">
+                <a href="{{ url_for('lab4.login', next=request.url) }}">Войдите</a>, чтобы оставить отзыв.
+            </p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

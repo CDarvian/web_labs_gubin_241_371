@@ -1,0 +1,14 @@
+{% if user_review %}
+<div class="card mb-3 border-primary">
+    <div class="card-header">Ваш отзыв</div>
+    <div class="card-body">
+        {% include 'courses/_review_item.html' %}
+    </div>
+</div>
+{% elif current_user.is_authenticated %}
+{% include 'courses/_review_form.html' %}
+{% else %}
+<p class="text-muted">
+    <a href="{{ url_for('lab4.login', next=request.url) }}">Войдите</a>, чтобы оставить отзыв.
+</p>
+{% endif %}

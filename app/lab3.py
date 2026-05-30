@@ -12,9 +12,10 @@ class User(UserMixin):
         self.password = password
 
 
-# Хардкодим пользователя из задания
+# Хардкод пользователя из задания
 users_db = {
-    "user": User("1", "user", "qwerty")
+    "user": User("1", "user", "qwerty"),
+    "user2": User("2", "test", "test")
 }
 
 
@@ -25,9 +26,18 @@ def index():
 
 @lab3_bp.route('/counter')
 def counter():
-    # Используем глобальный объект session для счетчика
-    session['visits'] = session.get('visits', 0) + 1
-    return render_template('lab3/counter.html', visits=session['visits'])
+    # Используем глобальный объект session: отдельный счётчик для каждого пользователя
+    user_key = current_user.username if current_user.is_authenticated else '__anonymous__'
+    visits = session.get('visits')
+    if not isinstance(visits, dict):
+        visits = {}
+    visits[user_key] = visits.get(user_key, 0) + 1
+    session['visits'] = visits
+    return render_template(
+        'lab3/counter.html',
+        visits=visits[user_key],
+        user_label=current_user.username if current_user.is_authenticated else 'аноним',
+    )
 
 
 @lab3_bp.route('/login', methods=['GET', 'POST'])

@@ -25,6 +25,23 @@ def test_counter_2(client):
     res = client.get('/lab3/counter')
     assert b'2' in res.data
 
+def test_counter_separate_for_user(client):
+    client.get('/lab3/counter')
+    client.get('/lab3/counter')
+    client.post('/lab3/login', data={'username': 'user', 'password': 'qwerty'})
+    res = client.get('/lab3/counter')
+    assert b'user' in res.data
+    assert b'<strong>1</strong>' in res.data
+
+def test_counter_persists_after_logout(client):
+    client.post('/lab3/login', data={'username': 'user', 'password': 'qwerty'})
+    client.get('/lab3/counter')
+    client.get('/lab3/counter')
+    client.get('/lab3/logout')
+    res = client.get('/lab3/counter')
+    assert 'аноним'.encode('utf-8') in res.data
+    assert b'<strong>1</strong>' in res.data
+
 # 3. После успешной аутентификации редирект на главную
 def test_auth_success_redirect(client):
     res = client.post('/lab3/login', data={'username': 'user', 'password': 'qwerty'})
